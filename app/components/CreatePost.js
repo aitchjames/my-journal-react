@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useContext } from "react"
 import { withRouter } from 'react-router-dom';
+import ExampleContext from '../ExampleContext';
 import Page from './Page';
 import Axios from 'axios';
 
 function CreatePost(props) {
     const [title, setTitle] = useState();
     const [body, setBody] = useState();
+    const { addFlashMessage } = useContext(ExampleContext);
 
     async function handleSubmit(event) {
         event.preventDefault();
@@ -14,7 +16,7 @@ function CreatePost(props) {
                 title, body, token: localStorage.getItem("myjournalToken")
             })
             // Redirect to new post url
-            props.addFlashMessage("Successfully added new journal")
+            addFlashMessage("Successfully added new journal")
             props.history.push(`/post/${response.data}`)
             console.log("New post was created")
         } catch(error) {
