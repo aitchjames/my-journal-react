@@ -1,24 +1,18 @@
 import React, { useEffect, useState, useContext } from "react"
-import DispatchContext from '../DispatchContext';
 import Axios from 'axios';
+import DispatchContext from '../DispatchContext';
 
 function HeaderLoggedOut(props) {
+    const appDispatch = useContext(DispatchContext);
     const [username, setUsername] = useState();
     const [password, setPassword] = useState();
-    const appDispatch = useContext(DispatchContext);
 
     async function handleSubmit(event) {
         event.preventDefault();
         try {
-            const response = await Axios.post("/login", {
-                    username, password 
-                }            
-            )
+            const response = await Axios.post("/login", { username, password })
             if (response.data) {
-                localStorage.setItem("myjournalToken", response.data.token);
-                localStorage.setItem("myjournalUsername", response.data.username);
-                localStorage.setItem("myjournalAvatar", response.data.avatar);
-                appDispatch({type: "login"})
+                appDispatch({ type: "login", data: response.data })
             } else {
                 console.log("Incorrect username / password")
             }            

@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from "react"
 import { withRouter } from 'react-router-dom';
 import DispatchContext from '../DispatchContext';
+import StateContext from '../StateContext';
 import Page from './Page';
 import Axios from 'axios';
 
@@ -8,12 +9,13 @@ function CreatePost(props) {
     const [title, setTitle] = useState();
     const [body, setBody] = useState();
     const appDispatch = useContext(DispatchContext);
+    const appState = useContext(StateContext);
 
     async function handleSubmit(event) {
         event.preventDefault();
         try {
             const response = await Axios.post("/create-post", {
-                title, body, token: localStorage.getItem("myjournalToken")
+                title, body, token: appState.user.token
             })
             // Redirect to new post url
             appDispatch({type: "flashMessage", value: "Successfully added new journal"})

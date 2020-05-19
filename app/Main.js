@@ -1,5 +1,6 @@
-import React, { useState, useReducer } from "react";
+import React, { useState, useReducer, useEffect } from "react";
 import ReactDOM from "react-dom";
+import { useImmerReducer } from "use-immer";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import Axios from 'axios';
 Axios.defaults.baseURL = 'http://localhost:8080';
@@ -22,31 +23,42 @@ import StateContext from './StateContext';
 function Main() {
     const initialState = {
         loggedIn: Boolean(localStorage.getItem("myjournalToken")),
-        flashMessages: []
+        flashMessages: [],
+        user: {
+            token: localStorage.getItem("myjournalToken"),
+            username: localStorage.getItem("myjournalUsername"),
+            avatar: localStorage.getItem("myjournalAvatar")
+        }
     }
 
-    function ourReducer(state, action) {
+    function ourReducer(draft, action) {
         switch (action.type) {
             case "login":
-                return {
-                    loggedIn: true,
-                    flashMessages: state.flashMessages
-                }
+                draft.loggedIn = true
+                draft.user = action.data
+                return
             case "logout":
-                return {
-                    loggedIn: false,
-                    flashMessages: state.flashMessages
-                }
+                draft.loggedIn = false
+                return
             case "flashMessage":
-                return {
-                    loggedIn: state.loggedIn, 
-                    flashMessages: state.flashMessages.concat(action.value)
-                }
-            
+                draft.flashMessages.push(action.value)
+                return            
         }
     }
     
-    const [state, dispatch] = useReducer(ourReducer, initialState);
+    const [state, dispatch] = useImmerReducer(ourReducer, initialState);
+
+    useEffect(() => {
+        if (state.loggedIn) {
+            localStorage.setItem("myjournalToken", state.user.token);
+            localStorage.setItem("myjournalUsername", state.user.username);
+            localStorage.setItem("myjournalAvatar", state.user.avatar);
+        } else {
+            localStorage.removeItem("myjournalToken");
+            localStorage.removeItem("myjournalUsername");
+            localStorage.removeItem("myjournalAvatar");
+        }
+    }, [state.loggedIn])
 
     return(
         <StateContext.Provider value={state}>
