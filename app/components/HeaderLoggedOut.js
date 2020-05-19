@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useContext } from "react"
-import ExampleContext from '../ExampleContext';
+import DispatchContext from '../DispatchContext';
 import Axios from 'axios';
 
 function HeaderLoggedOut(props) {
     const [username, setUsername] = useState();
     const [password, setPassword] = useState();
-    const { setLoggedIn } = useContext(ExampleContext);
+    const appDispatch = useContext(DispatchContext);
 
     async function handleSubmit(event) {
         event.preventDefault();
@@ -18,7 +18,7 @@ function HeaderLoggedOut(props) {
                 localStorage.setItem("myjournalToken", response.data.token);
                 localStorage.setItem("myjournalUsername", response.data.username);
                 localStorage.setItem("myjournalAvatar", response.data.avatar);
-                setLoggedIn(true)
+                appDispatch({type: "login"})
             } else {
                 console.log("Incorrect username / password")
             }            
