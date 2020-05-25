@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react"
 import { useParams, Link } from "react-router-dom";
 import Axios from "axios";
+import ReactMarkdown from 'react-markdown';
+import ReactTooltip from 'react-tooltip';
 import Page from './Page';
 import LoadingDotsIcon from "./LoadingDotsIcon";
 
@@ -37,8 +39,10 @@ function ViewSinglePost() {
             <div className="d-flex justify-content-between">
             <h2>{post.title}</h2>
             <span className="pt-2">
-            <a href="#" className="text-primary mr-2" title="Edit"><i className="fas fa-edit"></i></a>
-            <a className="delete-post-button text-danger" title="Delete"><i className="fas fa-trash"></i></a>
+            <Link to={`/post/${post._id}/edit`} data-tip="Edit" data-for="edit" className="text-primary mr-2"><i className="fas fa-edit"></i></Link>
+            <ReactTooltip id="edit" class="custom-tooltip" />{" "}
+            <a data-tip="Delete" data-for="delete" className="delete-post-button text-danger"><i className="fas fa-trash"></i></a>
+            <ReactTooltip id="delete" class="custom-tooltip" />
             </span>
         </div>
 
@@ -50,7 +54,7 @@ function ViewSinglePost() {
         </p>
 
         <div className="body-content">
-           {post.body}
+           <ReactMarkdown source={post.body} allowedTypes={["paragraph", "strong", "emphasis", "text", "heading", "list", "listItem"]} />
         </div>
         </Page>
     )
