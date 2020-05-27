@@ -2,6 +2,7 @@ import React, { useState, useReducer, useEffect } from "react";
 import ReactDOM from "react-dom";
 import { useImmerReducer } from "use-immer";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
+import { CSSTransition } from "react-transition-group";
 import Axios from 'axios';
 Axios.defaults.baseURL = 'http://localhost:8080';
 
@@ -18,6 +19,7 @@ import FlashMessages from './components/FlashMessages';
 import Profile from './components/Profile';
 import EditPost from './components/EditPost';
 import NotFound from "./components/NotFound";
+import Search from "./components/Search";
 
 // Context Providers
 import DispatchContext from './DispatchContext';
@@ -31,7 +33,8 @@ function Main() {
             token: localStorage.getItem("myjournalToken"),
             username: localStorage.getItem("myjournalUsername"),
             avatar: localStorage.getItem("myjournalAvatar")
-        }
+        },
+        isSearchOpen: false
     }
 
     function ourReducer(draft, action) {
@@ -45,7 +48,13 @@ function Main() {
                 return
             case "flashMessage":
                 draft.flashMessages.push(action.value)
-                return            
+                return   
+            case "openSearch":
+                draft.isSearchOpen = true
+                return
+            case "closeSearch":
+                draft.isSearchOpen = false
+                return      
         }
     }
     
@@ -95,6 +104,9 @@ function Main() {
                             <NotFound />
                         </Route>
                     </Switch>
+                    <CSSTransition timeout={330} in={state.isSearchOpen} classNames="search-overlay" unmountOnExit>
+                        <Search />
+                    </CSSTransition>
                     <Footer />        
                 </BrowserRouter>
             </DispatchContext.Provider>
