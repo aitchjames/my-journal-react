@@ -3,7 +3,7 @@ import Axios from "axios";
 import { useParams, Link } from "react-router-dom";
 import LoadingDotsIcon from "./LoadingDotsIcon";
 
-function ProfilePosts() {
+function ProfilePosts(props) {
     const { username } = useParams()
     const [isLoading, setIsLoading] = useState(true);
     const [posts, setPosts] = useState([]);
