@@ -36,7 +36,8 @@ function Main() {
             avatar: localStorage.getItem("myjournalAvatar")
         },
         isSearchOpen: false,
-        isChatOpen: false
+        isChatOpen: false,
+        unreadChatCount: 0
     }
 
     function ourReducer(draft, action) {
@@ -62,6 +63,12 @@ function Main() {
                 return
             case "closeChat":
                 draft.isChatOpen = false
+                return
+            case "incrementChatCount":
+                draft.unreadChatCount++
+                return
+            case "clearUnreadChatCount":
+                draft.unreadChatCount = 0
                 return
         }
     }
